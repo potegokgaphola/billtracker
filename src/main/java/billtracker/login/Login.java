@@ -69,11 +69,11 @@ public class Login extends JFrame {
 		login_panel.setBackground(Color.LIGHT_GRAY);
 		
 		JLabel user_icon = new JLabel("");
-		Image user_img = new ImageIcon(this.getClass().getResource("/user.png")).getImage();
+		Image user_img = new ImageIcon(getClass().getResource("/icons/user.png")).getImage();
 		user_icon.setIcon(new ImageIcon(user_img));
 		
 		JLabel password_icon = new JLabel("");
-		Image password_img = new ImageIcon(this.getClass().getResource("/password.png")).getImage();
+		Image password_img = new ImageIcon(getClass().getResource("/icons/password.png")).getImage();
 		password_icon.setIcon(new ImageIcon(password_img));
 		
 		username_field = new JTextField();
