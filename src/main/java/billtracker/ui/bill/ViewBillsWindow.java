@@ -1,21 +1,18 @@
-package billtracker.home;
+package billtracker.ui.bill;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import billtracker.model.UserModel;
+import billtracker.ui.home.HomeWindow;
 import com.toedter.calendar.JDateChooser;
 
-import billtracker.login.CurrentUser;
-import billtracker.login.My_CNX;
-import billtracker.login.User;
+import billtracker.data.DataConnection;
 
 import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.sql.PreparedStatement;
@@ -26,7 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.Color;
 import java.awt.Font;
 
-public class ViewBills extends JFrame {
+public class ViewBillsWindow extends JFrame {
 
 	private JPanel contentPane;
 	JLabel electricity_spending;
@@ -44,7 +41,7 @@ public class ViewBills extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ViewBills frame = new ViewBills();
+					ViewBillsWindow frame = new ViewBillsWindow();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -56,7 +53,7 @@ public class ViewBills extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ViewBills() {
+	public ViewBillsWindow() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -186,9 +183,9 @@ public class ViewBills extends JFrame {
 		home_btn.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 11));
 		home_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Home home = new Home();
+				HomeWindow home = new HomeWindow();
 				home.setVisible(true);
-				ViewBills.this.dispose();
+				ViewBillsWindow.this.dispose();
 			}
 		});
 		home_btn.setBounds(34, 11, 108, 20);
@@ -202,8 +199,8 @@ public class ViewBills extends JFrame {
 		boolean water = false;
 		
 		try {
-			User user = new CurrentUser();
-			PreparedStatement statement = My_CNX.getConnection().prepareStatement(query);
+			UserModel user = new UserModel();
+			PreparedStatement statement = DataConnection.getConnection().prepareStatement(query);
 			statement.setLong(1, user.getId());
 			statement.setString(2, date);
 			ResultSet result = statement.executeQuery();

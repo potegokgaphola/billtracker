@@ -1,6 +1,5 @@
-package billtracker.home;
+package billtracker.ui.home;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -8,12 +7,12 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 
+import billtracker.model.UserModel;
+import billtracker.ui.bill.BillGraphWindow;
+import billtracker.ui.bill.AddBillWindow;
+import billtracker.ui.bill.ViewBillsWindow;
 import com.toedter.calendar.JDateChooser;
 
-import billtracker.login.CurrentUser;
-import billtracker.login.User;
-
-import javax.swing.JInternalFrame;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -24,7 +23,7 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 
-public class Home extends JFrame {
+public class HomeWindow extends JFrame {
 
 	private JPanel contentPane;
 	JRadioButton food_rdbtn;
@@ -40,7 +39,7 @@ public class Home extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Home frame = new Home();
+					HomeWindow frame = new HomeWindow();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -52,7 +51,7 @@ public class Home extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Home() {
+	public HomeWindow() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -81,16 +80,16 @@ public class Home extends JFrame {
 		panel.add(viewBills_btn);
 		viewBills_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ViewBills veiwBill = new ViewBills();
+				ViewBillsWindow veiwBill = new ViewBillsWindow();
 				veiwBill.setVisible(true);
-				Home.this.dispose();
+				HomeWindow.this.dispose();
 			}
 		});
 		addBill_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AddBill addBill = new AddBill();
-				addBill.setVisible(true);
-				Home.this.dispose();
+				AddBillWindow addBillWindow = new AddBillWindow();
+				addBillWindow.setVisible(true);
+				HomeWindow.this.dispose();
 			}
 		});
 		
@@ -101,7 +100,7 @@ public class Home extends JFrame {
 		panel_1.setLayout(null);
 		
 		
-		User user = new CurrentUser();
+		UserModel user = new UserModel();
 		JLabel welcome_lbl = new JLabel("Welcome, "+user.getFirstname());
 		welcome_lbl.setHorizontalAlignment(SwingConstants.TRAILING);
 		welcome_lbl.setForeground(Color.WHITE);
@@ -178,9 +177,9 @@ public class Home extends JFrame {
 					dateChooser1.setCalendar(null);
 					bgroup.clearSelection();
 					
-					BillGraph billGraph = new BillGraph(bill_type+" Graph", "Progess for " + bill_type.toLowerCase(), bill_type, startDate, endDate);
-					billGraph.pack();
-					billGraph.setVisible(true);
+					BillGraphWindow billGraphWindow = new BillGraphWindow(bill_type+" Graph", "Progess for " + bill_type.toLowerCase(), bill_type, startDate, endDate);
+					billGraphWindow.pack();
+					billGraphWindow.setVisible(true);
 				}
 				
 			}

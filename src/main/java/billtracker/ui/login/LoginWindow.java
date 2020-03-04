@@ -1,17 +1,17 @@
-package billtracker.login;
+package billtracker.ui.login;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import billtracker.home.Home;
+import billtracker.ui.home.HomeWindow;
+import billtracker.data.DataConnection;
+import billtracker.model.UserModel;
 
 import java.awt.Color;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.Image;
@@ -23,15 +23,12 @@ import java.awt.event.ActionListener;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
 
-public class Login extends JFrame {
+public class LoginWindow extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField username_field;
@@ -45,7 +42,7 @@ public class Login extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Login frame = new Login();
+					LoginWindow frame = new LoginWindow();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -57,7 +54,7 @@ public class Login extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Login() {
+	public LoginWindow() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -69,11 +66,11 @@ public class Login extends JFrame {
 		login_panel.setBackground(Color.LIGHT_GRAY);
 		
 		JLabel user_icon = new JLabel("");
-		Image user_img = new ImageIcon(this.getClass().getResource("/user.png")).getImage();
+		Image user_img = new ImageIcon( getClass().getClassLoader().getResource("icons/user.png") ).getImage();
 		user_icon.setIcon(new ImageIcon(user_img));
 		
 		JLabel password_icon = new JLabel("");
-		Image password_img = new ImageIcon(this.getClass().getResource("/password.png")).getImage();
+		Image password_img = new ImageIcon( getClass().getClassLoader().getResource("icons/password.png") ).getImage();
 		password_icon.setIcon(new ImageIcon(password_img));
 		
 		username_field = new JTextField();
@@ -89,9 +86,9 @@ public class Login extends JFrame {
 				
 				if (checkFields()) {
 					if( checkUser(username_field.getText(), String.valueOf(password_field.getPassword()))) {
-						Home home = new Home();
-						home.setVisible(true);
-						Login.this.dispose();
+						HomeWindow homeWindow = new HomeWindow();
+						homeWindow.setVisible(true);
+						LoginWindow.this.dispose();
 					}
 				} else {
 					error_lbl.setText("Fill all fields");
@@ -109,9 +106,9 @@ public class Login extends JFrame {
 
 			public void actionPerformed(ActionEvent e) {
 				// Go to the register paged
-				Register register = new Register();
-				register.setVisible(true);
-				Login.this.dispose();
+				RegisterWindow registerWindow = new RegisterWindow();
+				registerWindow.setVisible(true);
+				LoginWindow.this.dispose();
 			}
 			
 		});
@@ -235,14 +232,14 @@ public class Login extends JFrame {
 		String query = "SELECT * FROM `users` WHERE `username` = ? AND `password` = ?";
 		
 		try {
-			PreparedStatement st = My_CNX.getConnection().prepareStatement(query);
+			PreparedStatement st = DataConnection.getConnection().prepareStatement(query);
 			st.setString(1, username);
 			st.setString(2, password);
 			ResultSet rs = st.executeQuery();
 			
 			if (rs.next()) {
 				
-				User user = new CurrentUser();
+				UserModel user = new UserModel();
 				user.setId(Integer.parseInt( rs.getString("user_id")));
 				user.setFirstname(rs.getString("firstname"));
 				output = true;

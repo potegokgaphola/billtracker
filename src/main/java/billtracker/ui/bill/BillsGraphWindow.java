@@ -1,14 +1,13 @@
-package billtracker.home;
+package billtracker.ui.bill;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import billtracker.login.CurrentUser;
-import billtracker.login.My_CNX;
+import billtracker.model.UserModel;
+import billtracker.data.DataConnection;
 
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -17,7 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class BillsGraph extends JFrame {
+public class BillsGraphWindow extends JFrame {
 
 	private JPanel contentPane;
 
@@ -28,7 +27,7 @@ public class BillsGraph extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					BillsGraph frame = new BillsGraph();
+					BillsGraphWindow frame = new BillsGraphWindow();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -40,7 +39,7 @@ public class BillsGraph extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public BillsGraph() {
+	public BillsGraphWindow() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -50,8 +49,8 @@ public class BillsGraph extends JFrame {
 		//to be deleted
 		String query = "SELECT * FROM `users` WHERE `user_id`=?";
 		try {
-			CurrentUser user = new CurrentUser();
-			PreparedStatement st = My_CNX.getConnection().prepareStatement(query);
+			UserModel user = new UserModel();
+			PreparedStatement st = DataConnection.getConnection().prepareStatement(query);
 			st.setLong(1, user.getId());
 			ResultSet rs = st.executeQuery();
 			

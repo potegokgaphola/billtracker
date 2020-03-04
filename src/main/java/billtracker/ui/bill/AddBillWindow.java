@@ -1,21 +1,18 @@
-package billtracker.home;
+package billtracker.ui.bill;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import billtracker.model.UserModel;
+import billtracker.ui.home.HomeWindow;
 import com.toedter.calendar.JDateChooser;
 
-import billtracker.login.CurrentUser;
-import billtracker.login.Login;
-import billtracker.login.My_CNX;
-import billtracker.login.User;
+import billtracker.data.DataConnection;
 
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import javax.swing.JTextField;
@@ -24,16 +21,12 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 
-public class AddBill extends JFrame {
+public class AddBillWindow extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField amount_field;
@@ -50,7 +43,7 @@ public class AddBill extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					AddBill frame = new AddBill();
+					AddBillWindow frame = new AddBillWindow();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -62,7 +55,7 @@ public class AddBill extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public AddBill() {
+	public AddBillWindow() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -187,9 +180,9 @@ public class AddBill extends JFrame {
 		back_btn.setForeground(Color.WHITE);
 		back_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Home home = new Home();
-				home.setVisible(true);
-				AddBill.this.dispose();
+				HomeWindow homeWindow = new HomeWindow();
+				homeWindow.setVisible(true);
+				AddBillWindow.this.dispose();
 			}
 		});
 		back_btn.setBounds(37, 184, 116, 23);
@@ -231,11 +224,11 @@ public class AddBill extends JFrame {
 	public boolean insertBill(Double amount, String date, String bill_type) {
 		
 		boolean output = false;
-		User user = new CurrentUser();
+		UserModel user = new UserModel();
 		String query = "INSERT INTO `bills`(`bill_amount`, `date`, `bill_type`, `user_id`) VALUE(?, ?, ?, ?)";
 		
 		try {
-			PreparedStatement statement = My_CNX.getConnection().prepareStatement(query);
+			PreparedStatement statement = DataConnection.getConnection().prepareStatement(query);
 			statement.setDouble(1, amount);
 			statement.setString(2, date);
 			statement.setString(3, bill_type);
