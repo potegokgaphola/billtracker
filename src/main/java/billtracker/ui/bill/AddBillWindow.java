@@ -10,7 +10,7 @@ import billtracker.model.UserModel;
 import billtracker.ui.home.HomeWindow;
 import com.toedter.calendar.JDateChooser;
 
-import billtracker.data.DataConnection;
+import billtracker.data.DataOperation;
 
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -228,7 +228,7 @@ public class AddBillWindow extends JFrame {
 		String query = "INSERT INTO `bills`(`bill_amount`, `date`, `bill_type`, `user_id`) VALUE(?, ?, ?, ?)";
 		
 		try {
-			PreparedStatement statement = DataConnection.getConnection().prepareStatement(query);
+			PreparedStatement statement = DataOperation.getConnection().prepareStatement(query);
 			statement.setDouble(1, amount);
 			statement.setString(2, date);
 			statement.setString(3, bill_type);

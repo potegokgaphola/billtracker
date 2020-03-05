@@ -10,7 +10,7 @@ import billtracker.model.UserModel;
 import billtracker.ui.home.HomeWindow;
 import com.toedter.calendar.JDateChooser;
 
-import billtracker.data.DataConnection;
+import billtracker.data.DataOperation;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;
@@ -67,13 +67,9 @@ public class ViewBillsWindow extends JFrame {
 		electricityBill_panel.setBounds(10, 96, 117, 100);
 		contentPane.add(electricityBill_panel);
 		electricityBill_panel.setLayout(null);
-		
-		JLabel electricity_lbl = new JLabel("Electricity bill");
-		electricity_lbl.setFont(new Font("Tahoma", Font.ITALIC, 11));
-		electricity_lbl.setForeground(Color.WHITE);
-		electricity_lbl.setBounds(10, 11, 97, 14);
-		electricityBill_panel.add(electricity_lbl);
-		
+
+		addElectricityLabel(electricityBill_panel, "Electricity bill", Font.ITALIC, 11, 97, 14);
+
 		no_eRecord_lbl = new JLabel("No records found");
 		no_eRecord_lbl.setForeground(Color.WHITE);
 		no_eRecord_lbl.setFont(new Font("Tahoma", Font.ITALIC, 11));
@@ -92,13 +88,9 @@ public class ViewBillsWindow extends JFrame {
 		input_panel.setBounds(10, 11, 414, 74);
 		contentPane.add(input_panel);
 		input_panel.setLayout(null);
-		
-		JLabel lblNewLabel_2 = new JLabel("Select the date of the bills you want");
-		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 11));
-		lblNewLabel_2.setForeground(Color.WHITE);
-		lblNewLabel_2.setBounds(10, 7, 223, 22);
-		input_panel.add(lblNewLabel_2);
-		
+
+		addElectricityLabel(input_panel, "Select the date of the bills you want", Font.BOLD | Font.ITALIC, 7, 223, 22);
+
 		dateChooser = new JDateChooser();
 		dateChooser.setBounds(243, 11, 161, 20);
 		input_panel.add(dateChooser);
@@ -191,7 +183,15 @@ public class ViewBillsWindow extends JFrame {
 		home_btn.setBounds(34, 11, 108, 20);
 		panel_3.add(home_btn);
 	}
-	
+
+	private void addElectricityLabel(JPanel electricityBill_panel, String s, int italic, int i, int i2, int i3) {
+		JLabel electricity_lbl = new JLabel(s);
+		electricity_lbl.setFont(new Font("Tahoma", italic, 11));
+		electricity_lbl.setForeground(Color.WHITE);
+		electricity_lbl.setBounds(10, i, i2, i3);
+		electricityBill_panel.add(electricity_lbl);
+	}
+
 	public void getBills(String date) {
 		String query = "SELECT * FROM `bills` WHERE `user_id`=? AND `date`=?";
 		boolean electricty = false;
@@ -200,7 +200,7 @@ public class ViewBillsWindow extends JFrame {
 		
 		try {
 			UserModel user = new UserModel();
-			PreparedStatement statement = DataConnection.getConnection().prepareStatement(query);
+			PreparedStatement statement = DataOperation.getConnection().prepareStatement(query);
 			statement.setLong(1, user.getId());
 			statement.setString(2, date);
 			ResultSet result = statement.executeQuery();

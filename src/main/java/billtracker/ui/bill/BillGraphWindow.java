@@ -15,7 +15,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-import billtracker.data.DataConnection;
+import billtracker.data.DataOperation;
 
 public class BillGraphWindow extends JFrame {
 
@@ -62,7 +62,7 @@ public class BillGraphWindow extends JFrame {
 		  String query  = "SELECT `bill_amount`, `date` FROM `bills` WHERE `date` BETWEEN ? AND ? AND `bill_type`=? ORDER BY `date` ASC";
 		  
 		  try {
-			statement = DataConnection.getConnection().prepareStatement(query);
+			statement = DataOperation.getConnection().prepareStatement(query);
 			statement.setString(1, startDate);
 			statement.setString(2, endDate);
 			statement.setString(3, bill_type);

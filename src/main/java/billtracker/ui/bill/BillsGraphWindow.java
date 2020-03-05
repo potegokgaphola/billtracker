@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import billtracker.model.UserModel;
-import billtracker.data.DataConnection;
+import billtracker.data.DataOperation;
 
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -50,7 +50,7 @@ public class BillsGraphWindow extends JFrame {
 		String query = "SELECT * FROM `users` WHERE `user_id`=?";
 		try {
 			UserModel user = new UserModel();
-			PreparedStatement st = DataConnection.getConnection().prepareStatement(query);
+			PreparedStatement st = DataOperation.getConnection().prepareStatement(query);
 			st.setLong(1, user.getId());
 			ResultSet rs = st.executeQuery();
 			

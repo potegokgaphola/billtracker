@@ -1,6 +1,6 @@
 package billtracker.ui.login;
 
-import billtracker.data.DataConnection;
+import billtracker.data.DataOperation;
 
 import java.awt.EventQueue;
 
@@ -171,7 +171,7 @@ public class RegisterWindow extends JFrame {
 		
 		String query = "SELECT * FROM `users` WHERE `username`=?";
 		try {
-			PreparedStatement statement = DataConnection.getConnection().prepareStatement(query);
+			PreparedStatement statement = DataOperation.getConnection().prepareStatement(query);
 			statement.setString(1, username);
 			ResultSet result = statement.executeQuery();
 			
@@ -201,7 +201,7 @@ public class RegisterWindow extends JFrame {
 		String query_two = "INSERT INTO `users`(`username`, `firstname`, `lastname`, `password`) VALUES(?, ?, ?, ?)";
 		
 		try {
-			PreparedStatement statement = DataConnection.getConnection().prepareStatement(query_two);
+			PreparedStatement statement = DataOperation.getConnection().prepareStatement(query_two);
 			statement.setString(1, username);
 			statement.setString(2, firstname);
 			statement.setString(3, lastname);

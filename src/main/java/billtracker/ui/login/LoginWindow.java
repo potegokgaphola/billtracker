@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import billtracker.ui.home.HomeWindow;
-import billtracker.data.DataConnection;
+import billtracker.data.DataOperation;
 import billtracker.model.UserModel;
 
 import java.awt.Color;
@@ -232,7 +232,7 @@ public class LoginWindow extends JFrame {
 		String query = "SELECT * FROM `users` WHERE `username` = ? AND `password` = ?";
 		
 		try {
-			PreparedStatement st = DataConnection.getConnection().prepareStatement(query);
+			PreparedStatement st = DataOperation.getConnection().prepareStatement(query);
 			st.setString(1, username);
 			st.setString(2, password);
 			ResultSet rs = st.executeQuery();
