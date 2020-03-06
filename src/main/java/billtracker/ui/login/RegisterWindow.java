@@ -1,13 +1,13 @@
-package billtracker.login;
+package billtracker.ui.login;
 
-import java.awt.BorderLayout;
+import billtracker.data.DataOperation;
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import javax.swing.JTextField;
@@ -20,7 +20,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
 import java.awt.Color;
 
-public class Register extends JFrame {
+public class RegisterWindow extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField username_field;
@@ -37,7 +37,7 @@ public class Register extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Register frame = new Register();
+					RegisterWindow frame = new RegisterWindow();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -49,7 +49,7 @@ public class Register extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Register() {
+	public RegisterWindow() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -134,9 +134,9 @@ public class Register extends JFrame {
 						System.out.println("passwords match");
 						if(!checkUser(username) && insertUser(username, firstname, lastname, password)) {
 							
-							Login login = new Login();
-							login.setVisible(true);
-							Register.this.dispose();
+							LoginWindow loginWindow = new LoginWindow();
+							loginWindow.setVisible(true);
+							RegisterWindow.this.dispose();
 						}
 					} else {
 						
@@ -171,7 +171,7 @@ public class Register extends JFrame {
 		
 		String query = "SELECT * FROM `users` WHERE `username`=?";
 		try {
-			PreparedStatement statement = My_CNX.getConnection().prepareStatement(query);
+			PreparedStatement statement = DataOperation.getConnection().prepareStatement(query);
 			statement.setString(1, username);
 			ResultSet result = statement.executeQuery();
 			
@@ -201,7 +201,7 @@ public class Register extends JFrame {
 		String query_two = "INSERT INTO `users`(`username`, `firstname`, `lastname`, `password`) VALUES(?, ?, ?, ?)";
 		
 		try {
-			PreparedStatement statement = My_CNX.getConnection().prepareStatement(query_two);
+			PreparedStatement statement = DataOperation.getConnection().prepareStatement(query_two);
 			statement.setString(1, username);
 			statement.setString(2, firstname);
 			statement.setString(3, lastname);

@@ -1,6 +1,5 @@
-package billtracker.home;
+package billtracker.ui.bill;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,7 +7,7 @@ import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
+
 import org.jfree.chart.JFreeChart;
 //import org.jfree.chart.ChartFactor
 import org.jfree.chart.ChartFactory;
@@ -16,9 +15,9 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-import billtracker.login.My_CNX;
+import billtracker.data.DataOperation;
 
-public class BillGraph extends JFrame {
+public class BillGraphWindow extends JFrame {
 
 	private JPanel contentPane;
 
@@ -29,7 +28,7 @@ public class BillGraph extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					BillGraph frame = new BillGraph("" ,"" , "", "", "");
+					BillGraphWindow frame = new BillGraphWindow("" ,"" , "", "", "");
 					frame.pack();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -42,7 +41,7 @@ public class BillGraph extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public BillGraph(String applicationTitle, String chartTitle,String bill_type,String startDate,String endDate) {
+	public BillGraphWindow(String applicationTitle, String chartTitle, String bill_type, String startDate, String endDate) {
 		super(applicationTitle);
 		JFreeChart lineChart = ChartFactory.createLineChart(chartTitle, 
 				"Date", "Bill Amount",
@@ -63,7 +62,7 @@ public class BillGraph extends JFrame {
 		  String query  = "SELECT `bill_amount`, `date` FROM `bills` WHERE `date` BETWEEN ? AND ? AND `bill_type`=? ORDER BY `date` ASC";
 		  
 		  try {
-			statement = My_CNX.getConnection().prepareStatement(query);
+			statement = DataOperation.getConnection().prepareStatement(query);
 			statement.setString(1, startDate);
 			statement.setString(2, endDate);
 			statement.setString(3, bill_type);
