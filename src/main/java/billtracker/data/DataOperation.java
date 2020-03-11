@@ -6,17 +6,26 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 public class DataOperation {
 
+	public int insert(String sqlQuery, Object[] params) throws SQLException {
+		int result;
+		try (Connection con = DataSource.getInstance().getConnection()) {
+			PreparedStatement stat = con.prepareStatement(sqlQuery);
+			for (int i = 0; i < params.length; i++) {
+				stat.setObject(i + 1, params[i]);
+			}
+			result = stat.executeUpdate();
+		}
+
+		return result;
+	}
+
 	public List<Object> getResults(String sqlQuery, Object[] params, BeanMapper mapper) throws SQLException {
 		List<Object> results = new ArrayList<>();
-		try (Connection con = DataSource.getInstance().getConnection();
-			 PreparedStatement stat = con.prepareStatement(sqlQuery)) {
+		try (Connection con = DataSource.getInstance().getConnection()) {
+			PreparedStatement stat = con.prepareStatement(sqlQuery);
 			for (int i = 0; i < params.length; i++) {
 				stat.setObject(i + 1, params[i]);
 			}

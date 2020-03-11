@@ -1,52 +1,32 @@
 package billtracker.ui.login;
 
-import java.awt.EventQueue;
+import java.awt.*;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+import billtracker.data.user.UserData;
 import billtracker.ui.home.HomeWindow;
-import billtracker.data.DataOperation;
-import billtracker.model.UserModel;
 
-import java.awt.Color;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import java.awt.Font;
-import java.awt.Image;
-
-import javax.swing.JTextField;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.awt.event.ActionEvent;
-import javax.swing.JPasswordField;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
+import java.util.List;
 
 public class LoginWindow extends JFrame {
 
-	private JPanel contentPane;
 	private JTextField username_field;
-	private JPasswordField password_field;
+	private JPasswordField password_field = new JPasswordField();
 	JLabel error_lbl;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					LoginWindow frame = new LoginWindow();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+		EventQueue.invokeLater(() -> {
+			try {
+				LoginWindow frame = new LoginWindow();
+				frame.setVisible(true);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		});
 	}
@@ -57,111 +37,45 @@ public class LoginWindow extends JFrame {
 	public LoginWindow() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
-		contentPane = new JPanel();
+		JPanel contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		
-		JPanel login_panel = new JPanel();
-		login_panel.setBackground(Color.LIGHT_GRAY);
-		
-		JLabel user_icon = new JLabel("");
-		Image user_img = new ImageIcon( getClass().getClassLoader().getResource("icons/user.png") ).getImage();
-		user_icon.setIcon(new ImageIcon(user_img));
-		
-		JLabel password_icon = new JLabel("");
-		Image password_img = new ImageIcon( getClass().getClassLoader().getResource("icons/password.png") ).getImage();
-		password_icon.setIcon(new ImageIcon(password_img));
-		
+
+		JPanel loginPanel = getLoginPanel();
+
+		JLabel userIcon = getUserIcon();
+
+		JLabel passwordIcon = getPasswordIcon();
+
 		username_field = new JTextField();
 		username_field.setColumns(10);
-		
-		JButton login_btn = new JButton("Login");
-		login_btn.setForeground(Color.WHITE);
-		login_btn.setBackground(Color.LIGHT_GRAY);
-		login_btn.addActionListener(new ActionListener() {
 
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				
-				if (checkFields()) {
-					if( checkUser(username_field.getText(), String.valueOf(password_field.getPassword()))) {
-						HomeWindow homeWindow = new HomeWindow();
-						homeWindow.setVisible(true);
-						LoginWindow.this.dispose();
-					}
-				} else {
-					error_lbl.setText("Fill all fields");
-				}
-				
+		JButton login_btn = getLoginButton();
 
-			}
-			
-		});
-		
-		JButton register_btn = new JButton("Register");
-		register_btn.setBackground(Color.LIGHT_GRAY);
-		register_btn.setForeground(Color.WHITE);
-		register_btn.addActionListener(new ActionListener() {
+		JButton register_btn = getRegisterButton();
 
-			public void actionPerformed(ActionEvent e) {
-				// Go to the register paged
-				RegisterWindow registerWindow = new RegisterWindow();
-				registerWindow.setVisible(true);
-				LoginWindow.this.dispose();
-			}
-			
-		});
-		
-		password_field = new JPasswordField();
-		                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
-		error_lbl = new JLabel("");
-		error_lbl.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		error_lbl.setForeground(Color.RED);
-		
-		JPanel heading_panel = new JPanel();
-		heading_panel.setBackground(Color.LIGHT_GRAY);
-		
-		JLabel heading_lbl = new JLabel("Bill Tracker");
-		heading_lbl.setFont(new Font("Tahoma", Font.BOLD, 18));
-		heading_lbl.setHorizontalAlignment(SwingConstants.CENTER);
-		
+		addErrorLabel();
+
+		JPanel headingPanel = getHeading();
+
+		createHeading(headingPanel);
+
 		JPanel panel = new JPanel();
+		panel.setBounds(10, 233, 414, 17);
 		panel.setBackground(Color.LIGHT_GRAY);
-		GroupLayout gl_contentPane = new GroupLayout(contentPane);
-		gl_contentPane.setHorizontalGroup(
-			gl_contentPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGap(5)
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addComponent(login_panel, GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
-						.addComponent(panel, GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
-						.addComponent(heading_panel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-					.addGap(5))
-		);
-		gl_contentPane.setVerticalGroup(
-			gl_contentPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGap(6)
-					.addComponent(heading_panel, GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
-					.addGap(11)
-					.addComponent(login_panel, GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
-					.addGap(20)
-					.addComponent(panel, GroupLayout.DEFAULT_SIZE, 17, Short.MAX_VALUE)
-					.addGap(6))
-		);
-		GroupLayout gl_login_panel = new GroupLayout(login_panel);
+		GroupLayout gl_login_panel = new GroupLayout(loginPanel);
 		gl_login_panel.setHorizontalGroup(
-			gl_login_panel.createParallelGroup(Alignment.LEADING)
+			gl_login_panel.createParallelGroup(GroupLayout.Alignment.LEADING)
 				.addGroup(gl_login_panel.createSequentialGroup()
 					.addGap(180)
-					.addComponent(user_icon)
+					.addComponent(userIcon)
 					.addGap(30)
 					.addComponent(username_field, GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
 					.addGap(10))
 				.addGroup(gl_login_panel.createSequentialGroup()
 					.addGap(180)
-					.addComponent(password_icon)
+					.addComponent(passwordIcon)
 					.addGap(30)
 					.addComponent(password_field, GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
 					.addGap(10))
@@ -177,95 +91,138 @@ public class LoginWindow extends JFrame {
 					.addGap(10))
 		);
 		gl_login_panel.setVerticalGroup(
-			gl_login_panel.createParallelGroup(Alignment.LEADING)
+			gl_login_panel.createParallelGroup(GroupLayout.Alignment.LEADING)
 				.addGroup(gl_login_panel.createSequentialGroup()
 					.addGap(11)
-					.addGroup(gl_login_panel.createParallelGroup(Alignment.LEADING)
-						.addComponent(user_icon)
+					.addGroup(gl_login_panel.createParallelGroup(GroupLayout.Alignment.LEADING)
+						.addComponent(userIcon)
 						.addGroup(gl_login_panel.createSequentialGroup()
 							.addGap(12)
 							.addComponent(username_field)))
 					.addGap(11)
-					.addGroup(gl_login_panel.createParallelGroup(Alignment.LEADING)
-						.addComponent(password_icon)
+					.addGroup(gl_login_panel.createParallelGroup(GroupLayout.Alignment.LEADING)
+						.addComponent(passwordIcon)
 						.addGroup(gl_login_panel.createSequentialGroup()
 							.addGap(12)
 							.addComponent(password_field)))
 					.addGap(6)
 					.addComponent(error_lbl, GroupLayout.DEFAULT_SIZE, 14, Short.MAX_VALUE)
 					.addGap(11)
-					.addGroup(gl_login_panel.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_login_panel.createParallelGroup(GroupLayout.Alignment.LEADING)
 						.addComponent(register_btn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addComponent(login_btn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 					.addGap(16))
 		);
-		login_panel.setLayout(gl_login_panel);
-		GroupLayout gl_heading_panel = new GroupLayout(heading_panel);
-		gl_heading_panel.setHorizontalGroup(
-			gl_heading_panel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_heading_panel.createSequentialGroup()
-					.addGap(73)
-					.addComponent(heading_lbl, GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
-					.addGap(140))
-		);
-		gl_heading_panel.setVerticalGroup(
-			gl_heading_panel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_heading_panel.createSequentialGroup()
-					.addGap(11)
-					.addComponent(heading_lbl, GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))
-		);
-		heading_panel.setLayout(gl_heading_panel);
-		contentPane.setLayout(gl_contentPane);
-		
-		
+		loginPanel.setLayout(gl_login_panel);
+		contentPane.setLayout(null);
+		contentPane.add(loginPanel);
+		contentPane.add(panel);
+		contentPane.add(headingPanel);
+
+
 	}
-	
-	/**
-	 * checks the user in the database 
-	 * @param username
-	 * @param password
-	 * @return true if the user exist
-	 */
-	public boolean checkUser(String username, String password) {
-		
-		boolean output = false;
-		String query = "SELECT * FROM `users` WHERE `username` = ? AND `password` = ?";
-		
-		try {
-			PreparedStatement st = DataOperation.getConnection().prepareStatement(query);
-			st.setString(1, username);
-			st.setString(2, password);
-			ResultSet rs = st.executeQuery();
-			
-			if (rs.next()) {
-				
-				UserModel user = new UserModel();
-				user.setId(Integer.parseInt( rs.getString("user_id")));
-				user.setFirstname(rs.getString("firstname"));
-				output = true;
+
+	private void createHeading(JPanel headingPanel) {
+		JLabel heading = new JLabel("Bill Tracker");
+		heading.setBounds(73, 11, 201, 24);
+		heading.setFont(new Font("Tahoma", Font.BOLD, 18));
+		heading.setHorizontalAlignment(SwingConstants.CENTER);
+		headingPanel.add(heading);
+	}
+
+	private JPanel getHeading() {
+		JPanel headingPanel = new JPanel();
+		headingPanel.setBounds(10, 11, 414, 35);
+		headingPanel.setBackground(Color.LIGHT_GRAY);
+		headingPanel.setLayout(null);
+		return headingPanel;
+	}
+
+	private void addErrorLabel() {
+		error_lbl = new JLabel("");
+		error_lbl.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		error_lbl.setForeground(Color.RED);
+	}
+
+	private JButton getLoginButton() {
+		JButton login_btn = new JButton("Login");
+		login_btn.setForeground(Color.WHITE);
+		login_btn.setBackground(Color.LIGHT_GRAY);
+		login_btn.addActionListener(e -> {
+			// TODO Auto-generated method stub
+
+			if (checkFields()) {
+				UserData userData = new UserData();
+				try {
+					List<Object> user = userData.getUser(username_field.getText().trim(), String.valueOf(password_field.getPassword()).trim());
+					if (user.size() == 1){
+						switchToHome();
+					} else {
+						error_lbl.setText("");
+						error_lbl.setText("Invalid username or password");
+					}
+				} catch (SQLException ex) {
+					ex.printStackTrace();
+				}
 			} else {
-				//login error
-				error_lbl.setText("Invald username or password");
+				error_lbl.setText("");
+				error_lbl.setText("Fill all fields");
 			}
-			
-		} catch (SQLException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		}
-		return output;
+		});
+		return login_btn;
 	}
-	
+
+	private void switchToHome() {
+		HomeWindow homeWindow = new HomeWindow();
+		homeWindow.setVisible(true);
+		LoginWindow.this.dispose();
+	}
+
+	private JLabel getPasswordIcon() {
+		JLabel passwordIcon = new JLabel("");
+		Image passwordImg = new ImageIcon( getClass().getClassLoader().getResource("icons/password.png") ).getImage();
+		passwordIcon.setIcon(new ImageIcon(passwordImg));
+		return passwordIcon;
+	}
+
+	private JLabel getUserIcon() {
+		JLabel userIcon = new JLabel("");
+		Image userImg = new ImageIcon( getClass().getClassLoader().getResource("icons/user.png") ).getImage();
+		userIcon.setIcon(new ImageIcon(userImg));
+		return userIcon;
+	}
+
+	private JPanel getLoginPanel() {
+		JPanel loginPanel = new JPanel();
+		loginPanel.setBounds(10, 57, 414, 156);
+		loginPanel.setBackground(Color.LIGHT_GRAY);
+		return loginPanel;
+	}
+
+	private JButton getRegisterButton() {
+		JButton register_btn = new JButton("Register");
+		register_btn.setBackground(Color.LIGHT_GRAY);
+		register_btn.setForeground(Color.WHITE);
+		register_btn.addActionListener(e -> {
+			// Go to the register paged
+			RegisterWindow registerWindow = new RegisterWindow();
+			registerWindow.setVisible(true);
+			LoginWindow.this.dispose();
+		});
+		return register_btn;
+	}
+
 	/**
 	 * checks if all the fields are filled
 	 * @return true if all are filled
 	 */
 	public boolean checkFields() {
 		boolean output = true;
-		
+
 		if(username_field.getText().trim().isEmpty() || String.valueOf(password_field.getPassword()).trim().isEmpty()) {
 			output = false;
 		}
-		
+
 		return output;
 	}
 }

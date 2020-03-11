@@ -1,21 +1,20 @@
 package billtracker.ui.bill;
 
-import java.awt.EventQueue;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.awt.*;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import billtracker.data.bill.BillData;
+import billtracker.model.BillModel;
 import org.jfree.chart.JFreeChart;
 //import org.jfree.chart.ChartFactor
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
-
-import billtracker.data.DataOperation;
 
 public class BillGraphWindow extends JFrame {
 
@@ -25,15 +24,13 @@ public class BillGraphWindow extends JFrame {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					BillGraphWindow frame = new BillGraphWindow("" ,"" , "", "", "");
-					frame.pack();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+		EventQueue.invokeLater(() -> {
+			try {
+				BillGraphWindow frame = new BillGraphWindow("" ,"" , "", "", "");
+				frame.pack();
+				frame.setVisible(true);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		});
 	}
@@ -41,44 +38,35 @@ public class BillGraphWindow extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public BillGraphWindow(String applicationTitle, String chartTitle, String bill_type, String startDate, String endDate) {
+	public BillGraphWindow(String applicationTitle, String chartTitle, String billType, String startDate, String endDate) {
 		super(applicationTitle);
-		JFreeChart lineChart = ChartFactory.createLineChart(chartTitle, 
-				"Date", "Bill Amount",
-				createDataset(startDate, endDate, bill_type), 
-				PlotOrientation.VERTICAL,
-				true, true, false);
+		JFreeChart lineChart = null;
+		try {
+			lineChart = ChartFactory.createLineChart(chartTitle,
+					"Date", "Bill Amount",
+					createDataset(startDate, endDate, billType),
+					PlotOrientation.VERTICAL,
+					true, true, false);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		ChartPanel chartPanel = new ChartPanel(lineChart);
 		chartPanel.setPreferredSize(new java.awt.Dimension(560, 367));
 		setContentPane( chartPanel);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	}
 
-	private DefaultCategoryDataset createDataset(String startDate, String endDate, String bill_type) {
+	private DefaultCategoryDataset createDataset(String startDate, String endDate, String billType) throws SQLException {
+
 	      DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-	      
-		  PreparedStatement statement;
-		  ResultSet result;
-		  String query  = "SELECT `bill_amount`, `date` FROM `bills` WHERE `date` BETWEEN ? AND ? AND `bill_type`=? ORDER BY `date` ASC";
-		  
-		  try {
-			statement = DataOperation.getConnection().prepareStatement(query);
-			statement.setString(1, startDate);
-			statement.setString(2, endDate);
-			statement.setString(3, bill_type);
-			
-			result = statement.executeQuery();
-			while (result.next()) {
-				
-				dataset.addValue( Double.parseDouble(result.getString("bill_amount")) 
-						, bill_type.toLowerCase() 
-						, result.getString("date"));
-			}
-		} catch (SQLException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
+		  BillData billData = new BillData();
+	      List<Object> graphData = billData.getGraphData(startDate, endDate, billType);
+
+		for (Object graphDatum : graphData) {
+			BillModel bill = (BillModel) graphDatum;
+			dataset.addValue(bill.getBillAmount(), billType.toLowerCase(), bill.getDate());
 		}
-		  
+
 	    return dataset;
 	}
 

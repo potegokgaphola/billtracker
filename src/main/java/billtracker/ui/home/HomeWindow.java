@@ -15,9 +15,7 @@ import com.toedter.calendar.JDateChooser;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
-import java.awt.event.ActionEvent;
 import java.awt.Color;
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -26,9 +24,9 @@ import javax.swing.SwingConstants;
 public class HomeWindow extends JFrame {
 
 	private JPanel contentPane;
-	JRadioButton food_rdbtn;
-	JRadioButton electricity_rdbtn;
-	JRadioButton water_rdbtn;
+	JRadioButton food_rdbtn = new JRadioButton();
+	JRadioButton electricity_rdbtn = new JRadioButton();
+	JRadioButton water_rdbtn = new JRadioButton();
 	private JDateChooser dateChooser;
 	private JDateChooser dateChooser1;
 
@@ -36,14 +34,12 @@ public class HomeWindow extends JFrame {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					HomeWindow frame = new HomeWindow();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+		EventQueue.invokeLater(() -> {
+			try {
+				HomeWindow frame = new HomeWindow();
+				frame.setVisible(true);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		});
 	}
@@ -64,42 +60,129 @@ public class HomeWindow extends JFrame {
 		panel.setBounds(23, 57, 101, 182);
 		contentPane.add(panel);
 		panel.setLayout(null);
-		
-		JButton addBill_btn = new JButton("add Bill");
-		addBill_btn.setBackground(Color.LIGHT_GRAY);
-		addBill_btn.setFont(new Font("Tahoma", Font.ITALIC, 11));
-		addBill_btn.setForeground(Color.WHITE);
-		addBill_btn.setBounds(10, 49, 84, 23);
-		panel.add(addBill_btn);
-		
-		JButton viewBills_btn = new JButton("view Bill");
-		viewBills_btn.setBackground(Color.LIGHT_GRAY);
-		viewBills_btn.setForeground(Color.WHITE);
-		viewBills_btn.setFont(new Font("Tahoma", Font.ITALIC, 11));
-		viewBills_btn.setBounds(10, 71, 84, 23);
-		panel.add(viewBills_btn);
-		viewBills_btn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ViewBillsWindow veiwBill = new ViewBillsWindow();
-				veiwBill.setVisible(true);
-				HomeWindow.this.dispose();
+
+		createNewBillButton(panel);
+
+		createGetBillButton(panel);
+
+		JPanel menuPanel = getMenuPanel();
+
+
+		addWelcomeLabel(menuPanel);
+
+		JPanel graphPanel = getGraphPanel();
+
+		addEndDateField(graphPanel);
+
+		addStartDateField(graphPanel);
+
+		final ButtonGroup bgroup = new ButtonGroup();
+
+		addRadioButton(graphPanel, bgroup, "water", water_rdbtn, 11, 73, 16);
+
+		addRadioButton(graphPanel, bgroup, "electricity", electricity_rdbtn,97, 85, 16);
+
+		addRadioButton(graphPanel, bgroup, "food", food_rdbtn,204, 53, 16);
+
+		createShowGraphButton(graphPanel, bgroup);
+
+		createStartDateLabel(graphPanel);
+
+		createEndLabel(graphPanel);
+	}
+
+	private JPanel getMenuPanel() {
+		JPanel menuPanel = new JPanel();
+		menuPanel.setBackground(Color.LIGHT_GRAY);
+		menuPanel.setBounds(23, 21, 401, 25);
+		contentPane.add(menuPanel);
+		menuPanel.setLayout(null);
+		return menuPanel;
+	}
+
+	private JPanel getGraphPanel() {
+		JPanel graphPanel = new JPanel();
+		graphPanel.setBackground(Color.LIGHT_GRAY);
+		graphPanel.setBounds(134, 57, 290, 182);
+		contentPane.add(graphPanel);
+		graphPanel.setLayout(null);
+		return graphPanel;
+	}
+
+	private void addEndDateField(JPanel panel_2) {
+		dateChooser = new JDateChooser();
+		dateChooser.setBounds(130, 58, 127, 20);
+		panel_2.add(dateChooser);
+	}
+
+	private void addStartDateField(JPanel panel_2) {
+		dateChooser1 = new JDateChooser();
+		dateChooser1.setBounds(130, 27, 127, 20);
+		panel_2.add(dateChooser1);
+	}
+
+	private void createEndLabel(JPanel panel_2) {
+		JLabel endDate_lbl = new JLabel("End Date");
+		endDate_lbl.setFont(new Font("Tahoma", Font.ITALIC, 11));
+		endDate_lbl.setForeground(Color.WHITE);
+		endDate_lbl.setBounds(10, 58, 74, 20);
+		panel_2.add(endDate_lbl);
+	}
+
+	private void createStartDateLabel(JPanel panel_2) {
+		JLabel startDate_lbl = new JLabel("Start Date");
+		startDate_lbl.setForeground(Color.WHITE);
+		startDate_lbl.setFont(new Font("Tahoma", Font.ITALIC, 11));
+		startDate_lbl.setBounds(10, 27, 74, 20);
+		panel_2.add(startDate_lbl);
+	}
+
+	private void createShowGraphButton(JPanel panel_2, ButtonGroup bgroup) {
+		JButton showGraph_btn = new JButton("show graph ");
+		showGraph_btn.setBounds(56, 131, 176, 23);
+		panel_2.add(showGraph_btn);
+		showGraph_btn.setBackground(Color.LIGHT_GRAY);
+		showGraph_btn.setFont(new Font("Tahoma", Font.ITALIC, 11));
+		showGraph_btn.setForeground(Color.WHITE);
+		showGraph_btn.addActionListener(e -> {
+			//get dates and bill type
+			String bill_type = "Electricity";
+			String startDate;
+			String endDate;
+			if(water_rdbtn.isSelected()) {
+				bill_type = "Water";
+			} else if(food_rdbtn.isSelected()) {
+				bill_type = "Food";
 			}
-		});
-		addBill_btn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				AddBillWindow addBillWindow = new AddBillWindow();
-				addBillWindow.setVisible(true);
-				HomeWindow.this.dispose();
+
+			if (dateChooser.getDate() != null && dateChooser1.getDate() != null) {
+
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+				endDate = format.format(dateChooser.getDate());
+				startDate = format.format(dateChooser1.getDate());
+				dateChooser.setCalendar(null);
+				dateChooser1.setCalendar(null);
+				bgroup.clearSelection();
+
+				BillGraphWindow billGraphWindow = new BillGraphWindow(bill_type+" Graph", "Progess for " + bill_type.toLowerCase(), bill_type, startDate, endDate);
+				billGraphWindow.pack();
+				billGraphWindow.setVisible(true);
 			}
+
 		});
-		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBackground(Color.LIGHT_GRAY);
-		panel_1.setBounds(23, 21, 401, 25);
-		contentPane.add(panel_1);
-		panel_1.setLayout(null);
-		
-		
+	}
+
+	private void addRadioButton(JPanel panel_2, ButtonGroup bgroup, String s, JRadioButton jRadioButton, int x, int width, int height) {
+		jRadioButton.setText(s);
+		jRadioButton.setBackground(Color.LIGHT_GRAY);
+		jRadioButton.setForeground(Color.WHITE);
+		jRadioButton.setFont(new Font("Tahoma", Font.ITALIC, 11));
+		jRadioButton.setBounds(x, 92, width, height);
+		bgroup.add(jRadioButton);
+		panel_2.add(jRadioButton);
+	}
+
+	private void addWelcomeLabel(JPanel panel_1) {
 		UserModel user = new UserModel();
 		JLabel welcome_lbl = new JLabel("Welcome, "+user.getFirstname());
 		welcome_lbl.setHorizontalAlignment(SwingConstants.TRAILING);
@@ -107,94 +190,33 @@ public class HomeWindow extends JFrame {
 		welcome_lbl.setFont(new Font("Tahoma", Font.ITALIC, 11));
 		welcome_lbl.setBounds(257, 11, 134, 14);
 		panel_1.add(welcome_lbl);
-		
-		JPanel panel_2 = new JPanel();
-		panel_2.setBackground(Color.LIGHT_GRAY);
-		panel_2.setBounds(134, 57, 290, 182);
-		contentPane.add(panel_2);
-		panel_2.setLayout(null);
-		
-		dateChooser = new JDateChooser();
-		dateChooser.setBounds(130, 58, 127, 20);
-		panel_2.add(dateChooser);
-		
-		dateChooser1 = new JDateChooser();
-		dateChooser1.setBounds(130, 27, 127, 20);
-		panel_2.add(dateChooser1);
-		
-		final ButtonGroup bgroup = new ButtonGroup();
-		
-		water_rdbtn = new JRadioButton("water");
-		water_rdbtn.setBackground(Color.LIGHT_GRAY);
-		water_rdbtn.setForeground(Color.WHITE);
-		water_rdbtn.setFont(new Font("Tahoma", Font.ITALIC, 11));
-		water_rdbtn.setBounds(11, 92, 73, 16);
-		bgroup.add(water_rdbtn);
-		panel_2.add(water_rdbtn);
-		
-		electricity_rdbtn = new JRadioButton("Electricity");
-		electricity_rdbtn.setBackground(Color.LIGHT_GRAY);
-		electricity_rdbtn.setForeground(Color.WHITE);
-		electricity_rdbtn.setFont(new Font("Tahoma", Font.ITALIC, 11));
-		electricity_rdbtn.setBounds(97, 92, 85, 16);
-		bgroup.add(electricity_rdbtn);
-		panel_2.add(electricity_rdbtn);
-		
-		food_rdbtn = new JRadioButton("Food");
-		food_rdbtn.setBackground(Color.LIGHT_GRAY);
-		food_rdbtn.setForeground(Color.WHITE);
-		food_rdbtn.setFont(new Font("Tahoma", Font.ITALIC, 11));
-		food_rdbtn.setBounds(204, 92, 53, 16);
-		bgroup.add(food_rdbtn);
-		panel_2.add(food_rdbtn);
-		
-		JButton showGraph_btn = new JButton("show graph ");
-		showGraph_btn.setBounds(56, 131, 176, 23);
-		panel_2.add(showGraph_btn);
-		showGraph_btn.setBackground(Color.LIGHT_GRAY);
-		showGraph_btn.setFont(new Font("Tahoma", Font.ITALIC, 11));
-		showGraph_btn.setForeground(Color.WHITE);
-		showGraph_btn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//get dates and bill type
-				String bill_type = null;
-				String startDate = null;
-				String endDate = null;
-				if(water_rdbtn.isSelected()) {
-					bill_type = "Water";
-				} else if(food_rdbtn.isSelected()) {
-					bill_type = "Food";
-				} else {
-					bill_type = "Electricity";
-				}
-				
-				if (dateChooser.getDate() != null && dateChooser1.getDate() != null) {
-					
-					SimpleDateFormat  format = new SimpleDateFormat("yyyy-MM-dd");
-					endDate = format.format(dateChooser.getDate());
-					startDate = format.format(dateChooser1.getDate());
-					dateChooser.setCalendar(null);
-					dateChooser1.setCalendar(null);
-					bgroup.clearSelection();
-					
-					BillGraphWindow billGraphWindow = new BillGraphWindow(bill_type+" Graph", "Progess for " + bill_type.toLowerCase(), bill_type, startDate, endDate);
-					billGraphWindow.pack();
-					billGraphWindow.setVisible(true);
-				}
-				
-			}
+	}
+
+	private void createGetBillButton(JPanel panel) {
+		JButton viewBills_btn = new JButton("view Bill");
+		viewBills_btn.setBackground(Color.LIGHT_GRAY);
+		viewBills_btn.setForeground(Color.WHITE);
+		viewBills_btn.setFont(new Font("Tahoma", Font.ITALIC, 11));
+		viewBills_btn.setBounds(10, 71, 84, 23);
+		panel.add(viewBills_btn);
+		viewBills_btn.addActionListener(e -> {
+			ViewBillsWindow veiwBill = new ViewBillsWindow();
+			veiwBill.setVisible(true);
+			HomeWindow.this.dispose();
 		});
-		
-		JLabel startDate_lbl = new JLabel("Start Date");
-		startDate_lbl.setForeground(Color.WHITE);
-		startDate_lbl.setFont(new Font("Tahoma", Font.ITALIC, 11));
-		startDate_lbl.setBounds(10, 27, 74, 20);
-		panel_2.add(startDate_lbl);
-		
-		JLabel endDate_lbl = new JLabel("End Date");
-		endDate_lbl.setFont(new Font("Tahoma", Font.ITALIC, 11));
-		endDate_lbl.setForeground(Color.WHITE);
-		endDate_lbl.setBounds(10, 58, 74, 20);
-		panel_2.add(endDate_lbl);
+	}
+
+	private void createNewBillButton(JPanel panel) {
+		JButton addBill_btn = new JButton("add Bill");
+		addBill_btn.setBackground(Color.LIGHT_GRAY);
+		addBill_btn.setFont(new Font("Tahoma", Font.ITALIC, 11));
+		addBill_btn.setForeground(Color.WHITE);
+		addBill_btn.setBounds(10, 49, 84, 23);
+		panel.add(addBill_btn);
+		addBill_btn.addActionListener(e -> {
+			AddBillWindow addBillWindow = new AddBillWindow();
+			addBillWindow.setVisible(true);
+			HomeWindow.this.dispose();
+		});
 	}
 }
